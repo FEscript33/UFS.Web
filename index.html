@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UFS ✨</title>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #000000, #3a0000, #7a0000, #ff0000);
+        background-size: 400% 400%;
+        animation: gradientMove 12s ease infinite;
+        color: white;
+        text-align: center;
+    }
+
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+        font-size: 3.5em;
+        letter-spacing: 2px;
+        margin-top: 80px;
+        text-shadow: 0 0 25px red, 0 0 10px #ff3333;
+    }
+
+    p.description {
+        font-size: 1.2em;
+        max-width: 700px;
+        margin: 10px auto 50px;
+        color: #ffcccc;
+        background: rgba(30, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 15px 25px;
+        border: 1px solid #ff3333;
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    }
+
+    h2 {
+        color: #ff4444;
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px red;
+    }
+
+    .script-container {
+        background: rgba(20, 20, 20, 0.85);
+        border: 1px solid red;
+        border-radius: 10px;
+        padding: 20px;
+        width: 80%;
+        max-width: 900px;
+        margin: 0 auto 50px;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        position: relative;
+    }
+
+    pre {
+        text-align: left;
+        overflow-x: auto;
+        font-family: monospace;
+        color: #ff6666;
+        background: #111;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #550000;
+    }
+
+    .copy-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 15px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+    .copy-btn:hover {
+        background: #ff4444;
+        box-shadow: 0 0 10px red;
+    }
+
+    footer {
+        color: #888;
+        margin-bottom: 30px;
+        font-size: 0.9em;
+    }
+</style>
+</head>
+<body>
+
+    <h1>UFS ✨</h1>
+    <p class="description">Hey there 👋 Welcome to <strong>UFS</strong> — the ultimate spot for Roblox scripts focused on <strong>flinging, trolling, and pure chaos</strong> 💥.  
+    We design powerful, FE-compatible fling and combat scripts made for fun, speed, and style.  
+    If you love experimenting with Roblox physics and throwing people across the map 🚀 — you’re in the right place! 😎🔥</p>
+
+    <!-- CLICK FLING SCRIPT -->
+    <div class="script-container">
+        <h2>💥 Click Fling</h2>
+        <button class="copy-btn" onclick="copyCode('clickFling')">📋 Copy</button>
+        <pre id="clickFling">--Made by FEscript33/French
+
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local Mouse = Player:GetMouse()
+
+local Message = function(_Title, _Text, Time)
+	game:GetService("StarterGui"):SetCore("SendNotification", {
+		Title = _Title,
+		Text = _Text,
+		Duration = Time
+	})
+end
+
+local SkidFling = function(TargetPlayer)
+	local Character = Player.Character
+	local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+	local RootPart = Humanoid and Humanoid.RootPart
+
+	local TCharacter = TargetPlayer.Character
+	if not TCharacter then return end
+
+	local THumanoid = TCharacter:FindFirstChildOfClass("Humanoid")
+	local TRootPart = THumanoid and THumanoid.RootPart
+	local THead = TCharacter:FindFirstChild("Head")
+	local Accessory = TCharacter:FindFirstChildOfClass("Accessory")
+	local Handle = Accessory and Accessory:FindFirstChild("Handle")
+
+	if not (Character and Humanoid and RootPart and TRootPart) then
+		return Message("Error", "Something went wrong.", 5)
+	end
+
+	local oldCFrame = RootPart.CFrame
+	workspace.FallenPartsDestroyHeight = -500
+
+	local BV = Instance.new("BodyVelocity")
+	BV.Name = "EpixVel"
+	BV.Parent = RootPart
+	BV.Velocity = Vector3.new(9e8, 9e8, 9e8)
+	BV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+
+	local FPos = function(BasePart, Pos, Ang)
+		RootPart.CFrame = CFrame.new(BasePart.Position) * Pos * Ang
+		Character:SetPrimaryPartCFrame(CFrame.new(BasePart.Position) * Pos * Ang)
+		RootPart.Velocity = Vector3.new(9e7, 9e7 * 10, 9e7)
+		RootPart.RotVelocity = Vector3.new(9e8, 9e8, 9e8)
+	end
+
+	local function SFBasePart(BasePart)
+		local TimeToWait = 2
+		local Time = tick()
+		local Angle = 0
+		repeat
+			if RootPart and THumanoid then
+				Angle += 100
+				FPos(BasePart, CFrame.new(0, 1.5, 0), CFrame.Angles(math.rad(Angle), 0, 0))
+				task.wait()
+				FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(math.rad(Angle), 0, 0))
+				task.wait()
+			else
+				break
+			end
+		until tick() > Time + TimeToWait
+	end
+
+	if TRootPart then
+		SFBasePart(TRootPart)
+	elseif THead then
+		SFBasePart(THead)
+	elseif Handle then
+		SFBasePart(Handle)
+	end
+
+	BV:Destroy()
+	Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+	task.wait(0.2)
+
+	if RootPart and oldCFrame then
+		RootPart.Velocity = Vector3.zero
+		RootPart.RotVelocity = Vector3.zero
+
+		for _, v in pairs(RootPart:GetChildren()) do
+			if v:IsA("BodyMover") then v:Destroy() end
+		end
+
+		for i = 1, 10 do
+			RootPart.CFrame = oldCFrame + Vector3.new(0, 0.5, 0)
+			task.wait(0.05)
+		end
+	end
+
+	Message("Success", "Target Flung!", 3)
+end
+
+Message("Click Flinger", "Click on a player to fling them!", 5)
+
+Mouse.Button1Down:Connect(function()
+	local target = Mouse.Target
+	if not target then return end
+
+	local model = target:FindFirstAncestorOfClass("Model")
+	if not model then return end
+
+	local TargetPlayer = Players:GetPlayerFromCharacter(model)
+	if not TargetPlayer or TargetPlayer == Player then return end
+
+	local highlight = Instance.new("Highlight")
+	highlight.Parent = model
+	highlight.FillColor = Color3.fromRGB(255, 0, 0)
+	highlight.OutlineColor = Color3.fromRGB(255, 0, 0)
+	highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+
+	Message("Target Locked", "Flinging " .. TargetPlayer.Name .. " in 2 seconds...", 2)
+
+	task.wait(2)
+	if highlight then highlight:Destroy() end
+
+	if TargetPlayer and TargetPlayer.Character then
+		SkidFling(TargetPlayer)
+	end
+end)
+</pre>
+    </div>
+
+    <!-- FE KNIFE SCRIPT -->
+    <div class="script-container">
+        <h2>🔪 FE Knife</h2>
+        <button class="copy-btn" onclick="copyCode('feKnife')">📋 Copy</button>
+        <pre id="feKnife">loadstring(game:HttpGet("https://pastefy.app/oQqOvNQ1/raw",true))()</pre>
+    </div>
+
+    <footer>🔥 Built with ❤️ by FEscript33/French — Part of the UFS Team 🔥</footer>
+
+    <script>
+        function copyCode(id) {
+            const code = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(code);
+            const btn = event.target;
+            btn.innerText = "✅ Copied!";
+            setTimeout(() => btn.innerText = "📋 Copy", 2000);
+        }
+    </script>
+
+</body>
+</html>
